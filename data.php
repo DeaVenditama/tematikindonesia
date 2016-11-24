@@ -13,7 +13,8 @@ if (!$con) {
 }
 
 $records = array();
-$sql = "SELECT ID,PROVINSI,JUMLAHPENDUDUK FROM jumlahpenduduk"; 
+$sql = "SELECT ID, PROVINSI, JUMLAHPENDUDUK, JUMLAHPENDUDUK * 100 / (select sum(JUMLAHPENDUDUK) FROM jumlahpenduduk) AS 'PERSENTASE'
+FROM jumlahpenduduk"; 
 $result = mysqli_query($con, $sql);
 
 while($obj = mysqli_fetch_object($result)) {

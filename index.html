@@ -21,6 +21,7 @@
     <link href="dashboard.css" rel="stylesheet">
 
      <link rel="stylesheet" href="leaflet/leaflet.css" />
+     <link rel="stylesheet" href="Leaflet-MiniMap-master/src/Control.MiniMap.css" />
      <style>
         #mapindonesia { height: 500px; }
         .info 
@@ -52,6 +53,7 @@
             opacity: 0.7; 
           }
      </style>
+
   </head>
 
   <body>
@@ -106,6 +108,7 @@
     <script src="bootstrap-3.3.7/docs/assets/js/ie10-viewport-bug-workaround.js"></script>
 
      <script src="leaflet/leaflet.js"></script>
+     <script src="Leaflet-MiniMap-master/src/Control.MiniMap.js" type="text/javascript"></script>
      <script>
          var style = {
             "fillColor": "#ff7800",                    
@@ -118,10 +121,13 @@
         var geojson;
 
         var map = L.map('mapindonesia').setView([-3.721933, 114.793895], 5);
-
+        
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',          
         }).addTo(map); 
+
+        var osm2 = new L.TileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 13, attribution: 'osm'});
+        var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true, position: 'bottomleft'}).addTo(map);
 
         $.ajax({
         dataType: "json",
@@ -145,11 +151,11 @@
               geojson=L.geoJSON(data,{
                 onEachFeature:onEachFeature,
                 style:style                
-              }).bindPopup(function (layer) {                            
-                  return layer.feature.properties.PROVINSI;
               }).addTo(map);
 
               function onEachFeature(feature, layer) {
+                var provinsi,persentase,jumlah;
+
                 layer.on({
                   mouseover: highlightFeature,
                   mouseout: resetHighlight,                  
@@ -179,9 +185,15 @@
                     {
                       layer.setStyle({fillColor:"#e74c3c"});
                     }
-                                                   
-                  }
-                }                
+                  provinsi=datasql.provinsi[i].PROVINSI;     
+                  persentase=datasql.provinsi[i].PERSENTASE;                                                   
+                  }                
+                }
+
+                var html="<b>"+provinsi+"</b><br>";
+                html+="Jumlah Penduduk "+jumlah+" Ribu Jiwa<br>";
+                html+=Math.round(persentase * 100) / 100 +" persen dari jumlah penduduk Indonesia"; 
+                layer.bindPopup(html);               
               } 
             }
           });
@@ -206,6 +218,7 @@
               }              
               return div;
           };
+
           //meletakkan legenda di dalam peta
           legend.addTo(map);
         }
