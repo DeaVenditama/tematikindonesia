@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Peta Tematik Indonesia</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="bootstrap-3.3.7/docs/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
+
+     <link rel="stylesheet" href="leaflet/leaflet.css" />
+     <style>
+        #mapindonesia { height: 500px; }
+        .info 
+          { 
+            padding: 6px 8px; 
+            font: 14px/16px Arial, Helvetica, sans-serif; 
+            background: white; 
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+            border-radius: 5px; 
+          }
+        .info h4 
+          { 
+            margin: 0 0 5px;
+            color: #777; 
+          }
+        .legend 
+          { 
+            text-align: left;
+            line-height: 18px;
+            color: #555; 
+          } 
+        .legend i 
+          {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7; 
+          }
+     </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Peta Tematik Indonesia</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Peta <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Edit Data</a></li>            
+          </ul>          
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div id="mapindonesia">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="jquery-3.1.1.min.js"></script>    
+    <script src="bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="bootstrap-3.3.7/docs/assets/js/ie10-viewport-bug-workaround.js"></script>
+
+     <script src="leaflet/leaflet.js"></script>
+     <script>
+         var style = {
+            "fillColor": "#ff7800",                    
+            "fillOpacity": 0.8,
+            "stroke": true,
+            "color": "#03f",
+            "weight": 1,
+        };
+        
+        var geojson;
+
+        var map = L.map('mapindonesia').setView([-3.721933, 114.793895], 5);
+
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map); 
+
+        $.ajax({
+        dataType: "json",
+        //memanggil data.php yang tadi dibuat
+        url: "data.php",
+        success: function(datasql) {                    
+          indonesialayer(datasql);
+          }
+        });
+        legenda();
+        function indonesialayer(datasql)
+        {
+          $.ajax({
+          dataType: "json",
+          //memanggil provinsi.json yang tadi di download
+          url: "provinsi.json",
+          success: function(data) {
+              //provinsi.json disimpan dalam variable data
+              //tampilkan provinsi.json ke dalam mapindonesia            
+              //bindPopup digunakan untuk menampilkan info nama provinsi ketika layer provinsi di klik                        
+              geojson=L.geoJSON(data,{
+                onEachFeature:onEachFeature,
+                style:style                
+              }).bindPopup(function (layer) {                            
+                  return layer.feature.properties.PROVINSI;
+              }).addTo(map);
+
+              function onEachFeature(feature, layer) {
+                layer.on({
+                  mouseover: highlightFeature,
+                  mouseout: resetHighlight,                  
+                });
+                for(var i=0;i<datasql.provinsi.length;i++)
+                {                  
+                  if(datasql.provinsi[i].ID==feature.properties.ID2013)
+                  {    
+                    jumlah=parseInt(datasql.provinsi[i].JUMLAHPENDUDUK);                
+                    if(jumlah<=3000)
+                    {
+                      layer.setStyle({fillColor:"#2ecc71"});    
+                    }
+                    else if(jumlah>3000&&jumlah<=6000)
+                    {                                    
+                      layer.setStyle({fillColor:"#9b59b6"});    
+                    }
+                    else if(jumlah>6000&&jumlah<=9000)
+                    {
+                      layer.setStyle({fillColor:"#3498db"});
+                    }
+                    else if(jumlah>9000&&jumlah<=12000)
+                    {
+                      layer.setStyle({fillColor:"#e67e22"});
+                    }
+                    else if(jumlah>12000)
+                    {
+                      layer.setStyle({fillColor:"#e74c3c"});
+                    }
+                                                   
+                  }
+                }                
+              } 
+            }
+          });
+        }
+        //fungsi untuk menampilkan legenda
+        function legenda()
+        {
+          //membuat variabel legenda dan menentukan posisi legenda
+          var legend = L.control({position: 'bottomright'});
+          //mengatur isi di dalam legenda
+          legend.onAdd = function (map) {
+
+              var div = L.DomUtil.create('div', 'info legend'),
+                  grades = [0, 3000, 6000, 9000, 12000],
+                  labels = [];
+              div.innerHTML +="<strong>Jumlah Penduduk<br/>(Ribu Jiwa)</strong><br/>";
+              // loop through our density intervals and generate a label with a colored square for each interval              
+              for (var i = 0; i < grades.length; i++) {
+                  div.innerHTML +=
+                      '<i style="background:' + getColor(grades[i] + 1) + '">&nbsp&nbsp</i> ' +
+                      grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');                  
+              }              
+              return div;
+          };
+          //meletakkan legenda di dalam peta
+          legend.addTo(map);
+        }
+        //fungsi untuk menampilkan warna sesuai nilai
+        function getColor(d) {
+            return d > 12000 ? '#e74c3c' :
+                   d > 9000 ? '#e67e22' :
+                   d > 6000 ? '#3498db' :
+                   d > 3000 ? '#9b59b6' :                   
+                              '#2ecc71';
+        }
+
+        function highlightFeature(e) {
+          var layer = e.target;
+
+          layer.setStyle({
+            weight: 5,
+            color: '#ff0000',
+            dashArray: '',
+            fillOpacity: 0.7
+          });
+
+          if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layer.bringToFront();
+          }          
+        }        
+
+        function resetHighlight(e) {
+          var layer=e.target;
+
+          layer.setStyle({            
+            stroke: true,
+            color: "#03f",
+            weight: 1,
+          })          
+        }
+
+
+               
+     </script>
+  </body>
+</html>
+<!--
+Buat warnain json
+//return {color: feature.properties.color};
+-->

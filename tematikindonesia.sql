@@ -1,0 +1,77 @@
+-- phpMyAdmin SQL Dump
+-- version 4.0.10deb1
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Nov 02, 2016 at 11:56 PM
+-- Server version: 5.5.44-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4.19
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `tematikindonesia`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jumlahpenduduk`
+--
+
+CREATE TABLE IF NOT EXISTS `jumlahpenduduk` (
+  `ID` int(2) DEFAULT NULL,
+  `PROVINSI` varchar(20) DEFAULT NULL,
+  `JUMLAHPENDUDUK` varchar(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `jumlahpenduduk`
+--
+
+INSERT INTO `jumlahpenduduk` (`ID`, `PROVINSI`, `JUMLAHPENDUDUK`) VALUES
+(11, 'ACEH', '5096'),
+(12, 'SUMATERA UTARA', '14103'),
+(13, 'SUMATERA BARAT', '5260'),
+(14, 'RIAU', '6501'),
+(15, 'JAMBI', '3459'),
+(16, 'SUMATERA SELATAN', '8161'),
+(17, 'BENGKULU', '1905'),
+(18, 'LAMPUNG', '8205'),
+(19, 'KEP. BANGKA BELITUNG', '1402'),
+(21, 'KEP. RIAU', '2028'),
+(31, 'DKI JAKARTA', '10278'),
+(32, 'JAWA BARAT', '47379'),
+(33, 'JAWA TENGAH', '34019'),
+(34, 'DI YOGYAKARTA', '3721'),
+(35, 'JAWA TIMUR', '39075'),
+(36, 'BANTEN', '12203'),
+(51, 'BALI', '4200'),
+(52, 'NUSA TENGGARA BARAT', '4896'),
+(53, 'NUSA TENGGARA TIMUR', '5204'),
+(61, 'KALIMANTAN BARAT', '4862'),
+(62, 'KALIMANTAN TENGAH', '2550'),
+(63, 'KALIMANTAN SELATAN', '4056'),
+(64, 'KALIMANTAN TIMUR', '4168'),
+(65, 'KALIMANTAN UTARA', '0'),
+(71, 'SULAWESI UTARA', '2437'),
+(72, 'SULAWESI TENGAH', '2922'),
+(73, 'SULAWESI SELATAN', '8606'),
+(74, 'SULAWESI TENGGARA', '2551'),
+(75, 'GORONTALO', '1151'),
+(76, 'SULAWESI BARAT', '1307'),
+(81, 'MALUKU', '1716'),
+(82, 'MALUKU UTARA', '1186'),
+(91, 'PAPUA BARAT', '893'),
+(94, 'PAPUA', '3207');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
