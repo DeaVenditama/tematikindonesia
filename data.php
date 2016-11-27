@@ -13,6 +13,7 @@ if (!$con) {
 }
 
 $records = array();
+//subelect tabel
 $sql = "SELECT ID, PROVINSI, JUMLAHPENDUDUK, JUMLAHPENDUDUK * 100 / (select sum(JUMLAHPENDUDUK) FROM jumlahpenduduk) AS 'PERSENTASE'
 FROM jumlahpenduduk"; 
 $result = mysqli_query($con, $sql);
